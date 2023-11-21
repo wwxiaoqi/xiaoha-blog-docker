@@ -43,18 +43,22 @@
 4. 修改 application.yml 配置文件
 将数据库连接信息修改成 docker 的 hostname 名称，例如：
 
+
+
    ```diff
--   url: jdbc:mysql://172.17.0.1:3306/weblog?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
-+   url: jdbc:mysql://blog-mysql:3306/weblog?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+	# mysql
+	-   url: jdbc:mysql://172.17.0.1:3306/...
+	+   url: jdbc:mysql://blog-mysql:3306/...
+   
+	# minio
+	-   endpoint: http://127.0.0.1:9000
+	+   endpoint: http://blog-minio:9000
    ```
-   ```diff
--   endpoint: http://127.0.0.1:9000
-+   endpoint: http://blog-minio:9000
-	```
-其他账号密码请自行对照 blog.env
+
+配置账号密码请自行对照 blog.env
 
 
-5. 将 package 编译好的 jar 复制进 xiaoha-blog-docker 路径下，并且重命名为 app.jar
+5. 将 package 编译好的 jar 复制进 xiaoha-blog-docker 路径下，并重命名为 app.jar
 
    ```shell
    mv quanxiaoha-v1.0.jar app.jar
