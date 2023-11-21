@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+
+  blog-mysql:
+    image: mysql:5.7
+    container_name: blog-mysql
+    hostname: blog-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file: blog.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${BLOG_ROOT_MYSQL_PASSWORD}
+    volumes:
+      - ./blog_mysql_data:/var/lib/mysql
+      - ./initialization/:/docker-entrypoint-initdb.d
+
+  blog-minio:
+    image: minio/minio:RELEASE.2023-09-30T07-02-29Z
+    container_name: blog-minio
+    hostname: blog-minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    env_file: blog.env
+    command: server /data --console-address ":9090"
+    environment:
+      MINIO_ROOT_USER: ${BLOG_MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${BLOG_MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./blog_minio:/var/lib/mysql
+
+  blog-server:
+    container_name: blog-server
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - blog-minio
+      - blog-mysql
